@@ -75,36 +75,36 @@ const createImportInventory = async (req, res) => {
   }
 };
 
-// const createImportOrders = async (req, res) => {
-//   try {
-//     const token = req.headers['authorization'];
-//     const { region, projectKey, importContainerKey } = req.body;
-//     const csvFile = req.file;
+const createImportOrders = async (req, res) => {
+  try {
+    const token = req.headers['authorization'];
+    const { region, projectKey, importContainerKey } = req.body;
+    const csvFile = req.file;
 
-//     if (!csvFile) {
-//       return res.status(400).json({ error: 'CSV file is required' });
-//     }
+    if (!csvFile) {
+      return res.status(400).json({ error: 'CSV file is required' });
+    }
 
-//     const response = await importService.createImportOrders(
-//       { region, projectKey, importContainerKey },
-//       csvFile,
-//       token
-//     );
+    const response = await importService.createImportOrders(
+      { region, projectKey, importContainerKey },
+      csvFile,
+      token
+    );
 
-//     res.status(200).json(response.data);
-//   } catch (error) {
-//     console.error('Error importing orders:', error);
-//     res.status(500).json({
-//       message: 'Failed to import orders',
-//       error: error.response ? error.response.data : error.message,
-//     });
-//   }
-// };
+    res.status(200).json(response.data);
+  } catch (error) {
+    console.error('Error importing orders:', error);
+    res.status(500).json({
+      message: 'Failed to import orders',
+      error: error.response ? error.response.data : error.message,
+    });
+  }
+};
 // ... rest of your existing controller functions ...
 
 module.exports = {
   createImportContainer,
   createImportCategories,
   createImportInventory,
-  // createImportOrders,
+  createImportOrders,
 };

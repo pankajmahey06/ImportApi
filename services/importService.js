@@ -60,111 +60,116 @@ const createImportCategories = async (data, csvFile, token) => {
 };
 
 // Function to create import orders by posting JSON data
-// const createImportOrders = async (data, csvFile, token) => {
-//   const { region, projectKey, importContainerKey } = data;
-//   const url = `https://import.${region}.commercetools.com/${projectKey}/orders/import-containers/${importContainerKey}`;
+const createImportOrders = async (data, csvFile, token) => {
+  const { region, projectKey, importContainerKey } = data;
+  const url = `https://import.${region}.commercetools.com/${projectKey}/orders/import-containers/${importContainerKey}`;
 
-//   // Parse the CSV file to JSON
-//   const jsonData = await orderParseCSVToJSON(csvFile.path);
+  // Parse the CSV file to JSON
+  const jsonData = await orderParseCSVToJSON(csvFile.path);
 
-//   // Set up HTTPS agent (if needed)
-//   const agent = new https.Agent({
-//     rejectUnauthorized: false, // Set to true if you need strict SSL certificate validation
-//   });
+  // Set up HTTPS agent (if needed)
+  const agent = new https.Agent({
+    rejectUnauthorized: false, // Set to true if you need strict SSL certificate validation
+  });
 
-//   const postData = {
-//     type: "order",
-//     resources: jsonData,
-//   };
+  const postData = {
+    type: "order",
+    resources: jsonData,
+  };
 
-//   try {
-//     // Send the POST request with the JSON data
-//     const response = await axios.post(url, postData, {
-//       httpsAgent: agent,
-//       headers: {
-//         Authorization: `${token}`,
-//         "Content-Type": "application/json",
-//       },
-//     });
+  try {
+    // Send the POST request with the JSON data
+    const response = await axios.post(url, postData, {
+      httpsAgent: agent,
+      headers: {
+        Authorization: `${token}`,
+        "Content-Type": "application/json",
+      },
+    });
 
-//     // Return the API response to the controller
-//     return response;
-//   } catch (error) {
-//     // Handle errors and propagate them to the controller
-//     console.error("Error while posting data to Commercetools:", error);
-//     throw error;
-//   }
-// };
+    // Return the API response to the controller
+    return response;
+  } catch (error) {
+    // Handle errors and propagate them to the controller
+    console.error("Error while posting data to Commercetools:", error);
+    throw error;
+  }
+};
 
 // Function to parse CSV file specifically for orders
-// const orderParseCSVToJSON = (csvFilePath) => {
-//   return new Promise((resolve, reject) => {
-//     const results = [];
+const orderParseCSVToJSON = (csvFilePath) => {
+  return new Promise((resolve, reject) => {
+    const results = [];
 
-//     fs.createReadStream(csvFilePath)
-//       .pipe(csvParser())
-//       .on("data", (row) => {
-//         const order = {
-//           key: row.orderNumber, // Added key field
-//           orderNumber: row.orderNumber,
-//           customer: {
-//             typeId: "customer",
-//             key: row.customerId // Using customerId as the customer key
-//           },
-//           customerEmail: row.customerEmail,
-//           totalPrice: {
-//             type: "centPrecision", // Added type field
-//             currencyCode: row.currencyCode || 'USD',
-//             centAmount: Math.round(parseFloat(row.totalPrice) * 100)
-//           },
-//           lineItems: [{
-//             variant: {
-//               typeId: "product-variant",
-//               key: `${row.productId}-${row.variantId}` // Combining product and variant IDs
-//             },
-//             name: {
-//               en: row.productName
-//             },
-//             price: {
-//               value: {
-//                 type: "centPrecision",
-//                 currencyCode: row.currencyCode || 'USD',
-//                 centAmount: Math.round(parseFloat(row.itemPrice) * 100)
-//               }
-//             },
-//             quantity: parseInt(row.quantity) || 1
-//           }],
-//           shippingAddress: {
-//             firstName: row.shippingFirstName,
-//             lastName: row.shippingLastName,
-//             streetName: row.shippingStreet,
-//             city: row.shippingCity,
-//             postalCode: row.shippingPostalCode,
-//             country: row.shippingCountry
-//           },
-//           billingAddress: {
-//             firstName: row.billingFirstName || row.shippingFirstName,
-//             lastName: row.billingLastName || row.shippingLastName,
-//             streetName: row.billingStreet || row.shippingStreet,
-//             city: row.billingCity || row.shippingCity,
-//             postalCode: row.billingPostalCode || row.shippingPostalCode,
-//             country: row.billingCountry || row.shippingCountry
-//           },
-//           orderState: row.orderState || 'Open',
-//           paymentState: row.paymentState || 'Paid',
-//           shipmentState: row.shipmentState || 'Shipped'
-//         };
+    fs.createReadStream(csvFilePath)
+      .pipe(csvParser())
+      .on("data", (row) => {
+        const order = {
+          // key: row.orderNumber, // Added key field
+          orderNumber: row.orderNumber,
+          // customer: {
+          //   typeId: "customer",
+          //   key: row.customerId // Using customerId as the customer key
+          // },
+          // customerEmail: row.customerEmail,
+          totalPrice: {
+            type: "centPrecision", // Added type field
+            currencyCode: row.currencyCode || 'USD',
+            centAmount: Math.round(parseFloat(row.totalPrice) * 100)
+          },
+          lineItems: [{
+            variant: {
+              "productVariant" : {
+              typeId : "product-variant",
+              key: row.variantId,
+              }
+            },
+            name: {
+              en: row.productId
+            },
+            name: {
+              en: row.productName
+            },
+            price: {
+              value: {
+                type: "centPrecision",
+                currencyCode: row.currencyCode || 'USD',
+                centAmount: Math.round(parseFloat(row.itemPrice) * 100)
+              }
+            },
+            quantity: parseInt(row.quantity) || 1
+          }],
+          shippingAddress: {
+            firstName: row.shippingFirstName,
+            lastName: row.shippingLastName,
+            streetName: row.shippingStreet,
+            city: row.shippingCity,
+            postalCode: row.shippingPostalCode,
+            country: row.shippingCountry
+          },
+          billingAddress: {
+            firstName: row.billingFirstName || row.shippingFirstName,
+            lastName: row.billingLastName || row.shippingLastName,
+            streetName: row.billingStreet || row.shippingStreet,
+            city: row.billingCity || row.shippingCity,
+            postalCode: row.billingPostalCode || row.shippingPostalCode,
+            country: row.billingCountry || row.shippingCountry
+          },
+          orderState: row.orderState || 'Open',
+          paymentState: row.paymentState || 'Paid',
+          shipmentState: row.shipmentState || 'Shipped'
+        };
 
-//         results.push(order);
-//       })
-//       .on("end", () => {
-//         resolve(results);
-//       })
-//       .on("error", (error) => {
-//         reject(error);
-//       });
-//   });
-// };
+        results.push(order);
+      })
+      .on("end", () => {
+        resolve(results);
+      })
+      .on("error", (error) => {
+        reject(error);
+      });
+  });
+};
 
 // Function to parse a CSV file and convert it into a JSON array for categories
 const parseCSVToJSON = (csvFilePath) => {
@@ -281,5 +286,5 @@ module.exports = {
   createImportContainer,
   createImportCategories,
   createImportInventory,
-  // createImportOrders,
+  createImportOrders,
 };
