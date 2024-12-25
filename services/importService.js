@@ -118,18 +118,22 @@ const orderParseCSVToJSON = (csvFilePath) => {
             centAmount: Math.round(parseFloat(row.totalPrice) * 100)
           },
           lineItems: [{
+            name : {
+            en : row.name
+            },
             variant: {
               "productVariant" : {
               typeId : "product-variant",
-              key: row.variantId,
-              }
+              key: row.product_key,
+              },
+              sku : row.sku
             },
-            name: {
-              en: row.productId
-            },
-            name: {
-              en: row.productName
-            },
+            // name: {
+            //   en: row.productId
+            // },
+            // name: {
+            //   en: row.productName
+            // },
             price: {
               value: {
                 type: "centPrecision",

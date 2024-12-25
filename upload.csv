@@ -1,0 +1,2 @@
+orderNumber,product_key,itemPrice,quantity,currencyCode,totalPrice,shippingFirstName,shippingLastName,shippingStreet,shippingCity,shippingPostalCode,shippingCountry,billingFirstName,billingLastName,billingStreet,billingCity,billingPostalCode,billingCountry,orderState,paymentState,shipmentState,sku,name
+2024-12-4-23006,rustic-country-dresser,150,1,USD,150,sebastian,smith,123 Main Street,New York,10001,US,sebastian,smith,123 Main Street,New York,10001,US,Open,Paid,Shipped,RCD-01,my_line_items
